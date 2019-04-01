@@ -1,0 +1,65 @@
+
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js"></script>
+   
+    <!-- <script type="text/javascript" src="https://192.168.0.4/smartcomms/data-capture/lib/data-capture-api.min.js" charset="utf-8"></script> -->
+    <!-- <script type="text/javascript" src="https://smartcomms-dev.bbldtl.int/smartcomms/data-capture/lib/data-capture.min.js" charset="utf-8"></script> -->
+    <script type="text/javascript" src="https://smartcomms-dev.bbldtl.int/smartcomms/data-capture/lib/api-common.min.js" charset="utf-8"></script> 
+    <script type="text/javascript" src="lib/data-capture-api.min.js" charset="utf-8"></script>
+
+<script type="text/javascript">
+    var dataCaptureComponent;
+
+
+
+    //Called on body load to initialize the data capture control
+    function loadDataCapture() {
+
+        dataCaptureComponent = new Thunderhead.DataCaptureComponent({
+            //The Smart Communications server that hosts data capture
+            'server': 'https://smartcomms-dev.bbldtl.int',
+
+            //When hosted in the cloud this can be left blank or set to '/one/data-capture', when hosted on an appliance it should
+            //be set to '/smartcomms/data-capture'
+            'context': '/smartcomms/data-capture',
+            'authUrl': 'https://na6.smartcommunications.cloud/one/saml/login/39661976-4d49-4afa-b872-e6110ce49265',
+			'templateResourceId': '150800165'
+
+        });
+
+        //Example of how to add an event listener
+        dataCaptureComponent.addListener({
+            interviewStarted: function() {
+                alert('The interview has started');
+            }
+        });
+    }
+
+    //Example of calling a method on the control; this will start the interview for a given template resource id following a button click.
+    //It could have also been started by setting the relevant query parameters on the iFrame URL
+    function startInterview() {
+      var res= dataCaptureComponent.startInterviewForResource(null, document.getElementById('templateResourceId').value, null, null);
+    console.log(res);
+    }
+
+    //Example of calling a method on the control the returns a value; this will get the transaction data from the current values in the interview.
+    function getTransactionData() {
+        dataCaptureComponent.getTransactionData(function(success, transactionData) {
+            alert(transactionData.replace(/ |\r|\n/g, ''));
+        });
+    }
+</script>
+
+<html>
+    <body onload="loadDataCapture();">
+        <p>test</p>
+        <input type="text" id="templateResourceId" value="150800165">
+        <input type="submit" id="startInterview" onclick="loadDataCapture();return false;" value="Start Interview">
+        <input type="submit" id="getTransactionData" onclick="getTransactionData();return false;" value="Get Transaction Data"/>
+        <!-- <div id="dataCaptureComponentContainer">
+            <iframe name="dataCaptureComponentWindow" id="dataCaptureComponentWindow"  title="Data Capture Component" frameborder="0" width="100%" height="100%" src="https://na6.smartcommunications.cloud/one/data-capture/interview.jsp?hostDomain=https://na6.smartcommunications.cloud&internal=true"></iframe>
+        </div> -->
+    </body>
+</html>
+
+

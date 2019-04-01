@@ -1,0 +1,50 @@
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20130526/json2.min.js">
+    //Reference to json2 for older browsers that don't have native JSON support
+    </script>
+    
+    <script type="text/javascript" src="https://smartcomms-dev.bbldtl.int/smartcomms/endvr-common/js/interview-api-min.js">
+    //Reference to the Interview API JavaScript
+    </script>
+<script type="text/javascript">
+    //Called on body load to initialize the data capture control
+    function loadDataCapture() {
+        //The domain of where the application embedding Data Capture is hosted
+        var hostDomain = 'https://smartcomms-dev.bbldtl.int';
+
+        //The Thunderhead ONE server that hosts data capture
+        var thunderheadDomain = 'https://smartcomms-dev.bbldtl.int';
+
+        //Initialize interview api
+        Thunderhead.InterviewApi.initApi('', thunderheadDomain, 'interviewFrame');
+
+        //Example of how to add an event listener
+        Thunderhead.InterviewApi.addListener({
+            interviewStarted: function() {
+                alert('The interview has started');
+            }
+        });
+
+        //Create the URL to the data capture control and set the location on the iFrame with an id of 'interviewFrame'
+        var url = thunderheadDomain + '/smartcomms/data-capture/interview.jsp?&hostDomain=' + encodeURIComponent(hostDomain) + '&interviewAppearance=' + encodeURIComponent('!showSubmit') ;
+        
+        window.frames['interviewFrame'].location = url;
+    }
+
+    //Example of calling a method on the control; this will start the interview for a given template resource id following a button click.
+    //It could have also been started by setting the relevant query parameters on the iFrame URL
+    function startInterview() {
+        Thunderhead.InterviewApi.startInterviewForResource(null, document.getElementById('templateResourceId').value, null, null);
+    }
+</script>
+<html>
+    <body onload="loadDataCapture()">
+        <p>test</p>
+        <input type="text" id="templateResourceId" value="150800165">
+        <input type="submit" id="startInterview" onclick="loadDataCapture();return false;" value="Start Interview">
+        <input type="submit" id="getTransactionData" onclick="getTransactionData();return false;" value="Get Transaction Data"/>
+        <!-- <div id="dataCaptureComponentContainer">
+            <iframe name="dataCaptureComponentWindow" id="dataCaptureComponentWindow"  title="Data Capture Component" frameborder="0" width="100%" height="100%" src="https://na6.smartcommunications.cloud/one/data-capture/interview.jsp?hostDomain=https://na6.smartcommunications.cloud&internal=true"></iframe>
+        </div> -->
+        <iframe name="interviewFrame" id="interviewFrame" style="width:99%;height:45%"></iframe>
+    </body>
+</html>
